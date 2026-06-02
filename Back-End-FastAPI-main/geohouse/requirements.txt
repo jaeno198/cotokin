@@ -1,0 +1,20 @@
+# ── Web framework ─────────────────────────────────────────────────────
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+ 
+# ── Banco de dados ─────────────────────────────────────────────────────
+SQLAlchemy==2.0.48
+pymysql==1.1.1          # driver MySQL puro Python (usado pela URL mysql+pymysql://)
+cryptography==44.0.3    # dependência do pymysql para conexões autenticadas
+ 
+# ── Validação e configuração ───────────────────────────────────────────
+pydantic==2.11.3
+pydantic-settings==2.9.1  # lê variáveis do .env via BaseSettings
+ 
+# ── Autenticação ───────────────────────────────────────────────────────
+passlib[bcrypt]==1.7.4  # hash de senha com bcrypt
+python-jose[cryptography]==3.3.0  # geração e verificação de JWT
+ 
+# ── Upload de arquivos ─────────────────────────────────────────────────
+python-multipart==0.0.20  # necessário para Form e File no FastAPI
+ 
