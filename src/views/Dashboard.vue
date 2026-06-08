@@ -2,9 +2,7 @@
   <div>
 
     <!-- MAPA DE ZONAS -->
-    Aqui está a `mapa-section` completa com o layout de 3 colunas:
-
-    ```html
+    <h1> Selecione 1 regiao   <h1>
     <section class="mapa-section">
       <div class="container-mx-auto py-3 px-4">
 
