@@ -329,7 +329,4 @@ onMounted(() => {
 .mapa-count-badge span{
   font-size: 80px;
 }
-.mapa-count-badge i{
-  
-}
 </style>
