@@ -18,7 +18,7 @@
           <input v-model="senha" type="password" placeholder="Mínimo 6 caracteres" required />
 
           <label>Confirmar Senha</label>
-          <input v-model="confirmarSenha" tBootstrap helpers mínimos placeholder="Repita a senha" required />
+          <input v-model="confirmarSenha" type="password" placeholder="Repita a senha" required />
 
           <p v-if="erro" class="erro">{{ erro }}</p>
 
