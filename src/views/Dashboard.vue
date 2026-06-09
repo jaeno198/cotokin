@@ -2,7 +2,7 @@
   <div>
 
     <!-- MAPA DE ZONAS -->
-    <h1> Selecione 1 regiao   <h1>
+    <h1> Selecione uma regiao </h1>
     <section class="mapa-section">
       <div class="container-mx-auto py-3 px-4">
 
@@ -317,14 +317,11 @@ onMounted(() => {
 .mapa-info-box{
   margin: 0 auto;
   position: relative;
-  top: 50vh;
+  top: 150px;
 }
 .mapa-count-badge{
   font-size: 30px;
-
-
 }
-
 
 .mapa-count-badge span{
   font-size: 80px;
