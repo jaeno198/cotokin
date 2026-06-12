@@ -89,6 +89,10 @@ export async function getImovel(id) {
   return request('GET', `/imoveis/${id}`)
 }
 
+export async function getImoveisUsuario(usuario_id) {
+  return request('GET', `/imoveis/?usuario_id=${usuario_id}`)
+}
+
 // ── Contatos ──────────────────────────────────────────────────────────────────
 
 export async function enviarContato(dados) {
