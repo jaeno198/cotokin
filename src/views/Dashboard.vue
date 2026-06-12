@@ -650,4 +650,40 @@ select:focus, input[type=number]:focus, input[type=text]:focus {
   padding: 8px 0;
   margin-bottom: 12px;
 }
+
+/* ── RESPONSIVIDADE DASHBOARD ──────────────────── */
+@media (max-width: 992px) {
+  .col-12.col-md-7 svg { width: 100% !important; }
+  .mapa-info-box { max-height: none; }
+  .mapa-count-badge { max-height: none; }
+}
+
+@media (max-width: 768px) {
+  /* Mapa */
+  .col-12.col-md-2 { flex-direction: row !important; flex-wrap: wrap; top: 0 !important; }
+  .zona-btn { height: 36px; font-size: 0.72rem; min-width: 90px; padding: 6px 10px; }
+  .col-12.col-md-7 svg { width: 100% !important; }
+  .mapa-info-box { min-width: 100%; max-height: none; }
+  .mapa-count-badge { min-width: 100%; max-height: none; justify-content: center; }
+
+  /* Sidebar filtros */
+  .sidebar { min-width: 100%; padding: 14px 16px; }
+  .sidebar-fields { gap: 8px 12px; }
+  .sidebar-field { flex: 1 1 140px; min-width: 130px; }
+
+  /* Container */
+  .container-main { padding: 0 12px; margin: 16px auto; gap: 16px; }
+
+  /* Listagem */
+  .listings { grid-template-columns: 1fr; gap: 14px; }
+  .card { min-width: 100%; }
+  .main-header { flex-direction: column; gap: 4px; }
+}
+
+@media (max-width: 480px) {
+  .zona-btn { font-size: 0.68rem; min-width: 80px; padding: 5px 8px; }
+  .card img { height: 180px; }
+  .price { font-size: 1.2rem; }
+  .mapa-section .section-title { font-size: 0.75rem; }
+}
 </style>
