@@ -57,6 +57,7 @@ def listar_imoveis(
     # Filtros de negócio
     tipo_negocio: Optional[str]     = Query(None, description="venda | aluguel | ambos"),
     categoria_id: Optional[int]     = Query(None, description="ID da categoria"),
+    categoria_slug: Optional[str]   = Query(None, description="Slug da categoria: casa, apartamento, terreno, comercial, rural"),
     status_id:    Optional[int]     = Query(None, description="ID do status"),
  
     # Filtros de características
@@ -100,6 +101,8 @@ def listar_imoveis(
         )
     if categoria_id:
         query = query.filter(Imovel.categoria_id == categoria_id)
+    if categoria_slug:
+        query = query.join(Categoria).filter(Categoria.slug == categoria_slug)
     if status_id:
         query = query.filter(Imovel.status_id == status_id)
     if quartos_min is not None:
@@ -136,6 +139,10 @@ def listar_imoveis(
             quartos=im.quartos,
             area_total=im.area_total,
             foto_capa=capa,
+            categoria_slug=im.categoria.slug if im.categoria else None,
+            criado_em=im.criado_em,
+        )
+            categoria_slug=im.categoria.slug if im.categoria else None,
             criado_em=im.criado_em,
         )
         resultado.append(resumo)

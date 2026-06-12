@@ -15,7 +15,7 @@
           <input v-model="telefone" type="tel" placeholder="(44) 99999-9999" />
 
           <label>Senha</label>
-          <input v-model="senha" type="password" placeholder="Mínimo 6 caracteres" required />
+          <input v-model="senha" type="password" placeholder="Mínimo 8 caracteres" required />
 
           <label>Confirmar Senha</label>
           <input v-model="confirmarSenha" type="password" placeholder="Repita a senha" required />
@@ -57,8 +57,8 @@ async function fazerCadastro() {
     erro.value = 'As senhas não coincidem.'
     return
   }
-  if (senha.value.length < 6) {
-    erro.value = 'A senha deve ter pelo menos 6 caracteres.'
+  if (senha.value.length < 8) {
+    erro.value = 'A senha deve ter pelo menos 8 caracteres.'
     return
   }
 
@@ -68,7 +68,7 @@ async function fazerCadastro() {
       nome: nome.value,
       email: email.value,
       telefone: telefone.value || null,
-      senha: senha.value,
+      password: senha.value,
     })
     sucesso.value = 'Conta criada com sucesso! Redirecionando...'
     setTimeout(() => router.push('/login'), 1500)

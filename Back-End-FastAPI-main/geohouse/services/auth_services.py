@@ -5,17 +5,18 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
  
+from config import settings
 from models import Usuario
  
 # ──────────────────────────────────────────────
 # Configurações JWT
-# Substitua SECRET_KEY por uma variável de ambiente via config.py
+# Usa as variáveis carregadas por config.py
 # ──────────────────────────────────────────────
  
-SECRET_KEY       = "TROQUE_POR_UMA_CHAVE_SEGURA_NO_.ENV"   # settings.secret_key
-ALGORITHM        = "HS256"
-ACCESS_TOKEN_EXP = 30      # minutos
-REFRESH_TOKEN_EXP = 60 * 24 * 7  # 7 dias em minutos
+SECRET_KEY       = settings.secret_key
+ALGORITHM        = settings.algorithm
+ACCESS_TOKEN_EXP = settings.access_token_exp
+REFRESH_TOKEN_EXP = settings.refresh_token_exp
  
  
 # ──────────────────────────────────────────────
