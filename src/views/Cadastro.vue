@@ -4,7 +4,7 @@
       <div class="card-form">
         <h2>Criar Conta</h2>
 
-        <form @submit.prevent="cadastrar">
+        <form @submit.prevent="fazerCadastro">
           <label>Nome completo</label>
           <input v-model="nome" type="text" placeholder="Seu nome" required />
 
@@ -21,8 +21,11 @@
           <input v-model="confirmarSenha" type="password" placeholder="Repita a senha" required />
 
           <p v-if="erro" class="erro">{{ erro }}</p>
+          <p v-if="sucesso" class="sucesso">{{ sucesso }}</p>
 
-          <button type="submit">Criar Conta</button>
+          <button type="submit" :disabled="carregando">
+            {{ carregando ? 'Criando conta...' : 'Criar Conta' }}
+          </button>
         </form>
 
         <p>Já tem conta? <router-link to="/login">Entrar</router-link></p>
@@ -34,23 +37,46 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { cadastrar } from '@/services/api.js'
 
-const router = useRouter()
-const nome = ref('')
-const email = ref('')
-const telefone = ref('')
-const senha = ref('')
+const router        = useRouter()
+const nome          = ref('')
+const email         = ref('')
+const telefone      = ref('')
+const senha         = ref('')
 const confirmarSenha = ref('')
-const erro = ref('')
+const erro          = ref('')
+const sucesso       = ref('')
+const carregando    = ref(false)
 
-function cadastrar() {
+async function fazerCadastro() {
+  erro.value = ''
+  sucesso.value = ''
+
   if (senha.value !== confirmarSenha.value) {
     erro.value = 'As senhas não coincidem.'
     return
   }
-  erro.value = ''
-  console.log('cadastro', { nome: nome.value, email: email.value, telefone: telefone.value })
-  router.push('/')
+  if (senha.value.length < 6) {
+    erro.value = 'A senha deve ter pelo menos 6 caracteres.'
+    return
+  }
+
+  carregando.value = true
+  try {
+    await cadastrar({
+      nome: nome.value,
+      email: email.value,
+      telefone: telefone.value || null,
+      senha: senha.value,
+    })
+    sucesso.value = 'Conta criada com sucesso! Redirecionando...'
+    setTimeout(() => router.push('/login'), 1500)
+  } catch (e) {
+    erro.value = e.message || 'Erro ao criar conta.'
+  } finally {
+    carregando.value = false
+  }
 }
 </script>
 
@@ -103,6 +129,7 @@ input {
   color: var(--azul-royal);
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
 }
 
 input:focus {
@@ -112,6 +139,12 @@ input:focus {
 
 .erro {
   color: #dc2626;
+  font-size: 0.85rem;
+  margin-top: 10px;
+}
+
+.sucesso {
+  color: #16a34a;
   font-size: 0.85rem;
   margin-top: 10px;
 }
@@ -131,9 +164,14 @@ button[type="submit"] {
   transition: opacity 0.2s, transform 0.2s;
 }
 
-button[type="submit"]:hover {
+button[type="submit"]:hover:not(:disabled) {
   opacity: 0.9;
   transform: translateY(-1px);
+}
+
+button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 p {
@@ -149,7 +187,5 @@ a {
   text-decoration: none;
 }
 
-a:hover {
-  color: var(--azul-royal);
-}
+a:hover { color: var(--azul-royal); }
 </style>
