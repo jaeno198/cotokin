@@ -4,6 +4,7 @@ from sqlalchemy import or_
 from typing import List, Optional
 from decimal import Decimal
  
+from database import get_db
 from models import Imovel, FotoImovel, Categoria, Status
 from schemas.imovel import ImovelCreate, ImovelRead, ImovelUpdate, ImovelResumo
  
@@ -14,9 +15,6 @@ router = APIRouter(prefix="/imoveis", tags=["Imóveis"])
 # Dependency: sessão do banco
 # ──────────────────────────────────────────────
  
-def get_db():
-    """Placeholder — substituído pelo SessionLocal do database.py."""
-    raise NotImplementedError("Conecte ao database.py")
  
  
 # ──────────────────────────────────────────────
@@ -53,6 +51,9 @@ def listar_imoveis(
     estado:       Optional[str]     = Query(None, min_length=2, max_length=2, description="UF — ex: PR"),
     bairro:       Optional[str]     = Query(None, description="Filtra por bairro"),
  
+    # Filtro por anunciante
+    usuario_id:   Optional[int]     = Query(None, description="ID do usuário anunciante"),
+
     # Filtros de negócio
     tipo_negocio: Optional[str]     = Query(None, description="venda | aluguel | ambos"),
     categoria_id: Optional[int]     = Query(None, description="ID da categoria"),
@@ -80,7 +81,12 @@ def listar_imoveis(
     Endpoint público — retorna lista resumida de imóveis disponíveis.
     Suporta múltiplos filtros combinados e paginação.
     """
-    query = db.query(Imovel).options(joinedload(Imovel.fotos))
+    query = db.query(Imovel)
+
+    if usuario_id:
+        from models import ImovelUsuario
+        sub = db.query(ImovelUsuario.imovel_id).filter(ImovelUsuario.usuario_id == usuario_id)
+        query = query.filter(Imovel.id.in_(sub)).options(joinedload(Imovel.fotos))
  
     if cidade:
         query = query.filter(Imovel.cidade.ilike(f"%{cidade}%"))
