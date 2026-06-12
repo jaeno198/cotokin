@@ -2,7 +2,7 @@
   <div>
 
     <!-- MAPA DE ZONAS -->
-    <h1> Selecione uma regiao </h1>
+    <h1>Selecione uma região</h1>
     <section class="mapa-section">
       <div class="container-mx-auto py-3 px-4">
 
@@ -14,9 +14,9 @@
 
           <!-- COL 1 — Botões de zona -->
           <div class="col-12 col-md-2 d-flex flex-column gap-2">
-            <button v-for="(cfg, key) in ZONAS_CFG" :key="key" class="zona-btn w-100" style='height: 10vh;'
+            <button v-for="(cfg, key) in ZONAS_CFG" :key="key" class="zona-btn w-100" style="height:10vh"
               :id="`zbtn-${key}`" :class="{ active: zonaAtiva === key }"
-              :style="zonaAtiva === key ? BTNS_STYLE[key] : ''" @click="handleSelecionarZona(key)" Novo Horizonte>
+              :style="zonaAtiva === key ? BTNS_STYLE[key] : ''" @click="handleSelecionarZona(key)">
               <span class="zdot" :style="`background:${key === 'all' ? 'rgba(255,255,255,0.7)' : cfg.cor}`"></span>
               {{ key === 'all' ? 'Toda Maringá' : cfg.nome }}
             </button>
@@ -26,9 +26,7 @@
           <div class="col-12 col-md-7" style="position:relative;">
             <div ref="tooltipEl" class="mapa-tooltip"></div>
             <svg ref="svgEl" viewBox="0 -4 400 420" xmlns="http://www.w3.org/2000/svg"
-              style="width:75%; height:auto; cursor:pointer; display:block;">
-
-              <!-- NORTE -->
+              style="width:75%;height:auto;cursor:pointer;display:block;">
               <g class="zgrp" data-zona="norte">
                 <rect class="zp" x="90" y="30" width="70" height="50" rx="4" data-b="Jd. Alvorada" />
                 <rect class="zp" x="165" y="30" width="70" height="50" rx="4" data-b="Vila Operária" />
@@ -43,8 +41,6 @@
                 <text class="zlabel" x="200" y="112">Jd. Imperial</text>
                 <text class="zlabel" x="275" y="112">Pq. Japão</text>
               </g>
-
-              <!-- LESTE -->
               <g class="zgrp" data-zona="leste">
                 <rect class="zp" x="310" y="135" width="80" height="55" rx="4" data-b="Jd. Novo Horizonte" />
                 <rect class="zp" x="310" y="195" width="80" height="55" rx="4" data-b="Jd. Borba Gato" />
@@ -53,8 +49,6 @@
                 <text class="zlabel" x="350" y="223">Borba Gato</text>
                 <text class="zlabel" x="350" y="283">Jd. Itaipu</text>
               </g>
-
-              <!-- OESTE -->
               <g class="zgrp" data-zona="oeste">
                 <rect class="zp" x="10" y="135" width="75" height="55" rx="4" data-b="Jd. Iguaçu" />
                 <rect class="zp" x="10" y="195" width="75" height="55" rx="4" data-b="Jd. Universo" />
@@ -63,8 +57,6 @@
                 <text class="zlabel" x="47" y="223">Jd. Universo</text>
                 <text class="zlabel" x="47" y="283">Pq. Palmeiras</text>
               </g>
-
-              <!-- CENTRO -->
               <g class="zgrp" data-zona="centro">
                 <rect class="zp" x="90" y="135" width="215" height="70" rx="4" data-b="Centro / Zonas 01-04" />
                 <rect class="zp" x="90" y="210" width="100" height="55" rx="4" data-b="Zona 01 / Zona 02" />
@@ -74,8 +66,6 @@
                 <text class="zlabel" x="140" y="238">Zona 01/02</text>
                 <text class="zlabel" x="250" y="238">Zona 03/04</text>
               </g>
-
-              <!-- SUL -->
               <g class="zgrp" data-zona="sul">
                 <rect class="zp" x="90" y="275" width="65" height="50" rx="4" data-b="Jd. Pinheiros" />
                 <rect class="zp" x="160" y="275" width="65" height="50" rx="4" data-b="Jd. Guanabara" />
@@ -83,8 +73,7 @@
                 <rect class="zp" x="90" y="330" width="65" height="55" rx="4" data-b="Jd. Alpes" />
                 <rect class="zp" x="160" y="330" width="65" height="55" rx="4" data-b="Jd. Liberdade" />
                 <rect class="zp" x="230" y="330" width="75" height="55" rx="4" data-b="Cidade Alta" />
-                <rect class="zp" x="90" y="390" width="215" height="25" rx="4"
-                  data-b="Sta. Felicidade / Cidade Industrial" />
+                <rect class="zp" x="90" y="390" width="215" height="25" rx="4" data-b="Sta. Felicidade / Cidade Industrial" />
                 <text class="zlabel" x="122" y="301">Jd. Pinheiros</text>
                 <text class="zlabel" x="192" y="301">Guanabara</text>
                 <text class="zlabel" x="267" y="301">Cj. Requião</text>
@@ -93,23 +82,10 @@
                 <text class="zlabel" x="267" y="358">Cidade Alta</text>
                 <text class="zlabel" x="197" y="405">Sta. Felicidade / Cidade Industrial</text>
               </g>
-
-              <!-- Setas cardinais -->
-              <text x="197" y="20" style="font-size:10px;font-weight:700;
-          text-anchor:middle;fill:#0077B6;
-          font-family:'DM Sans',sans-serif;">↑ NORTE</text>
-
-              <text x="197" y="390" style="font-size:10px;font-weight:700;
-           text-anchor:middle;fill:#0077B6;
-           font-family:'DM Sans',sans-serif;">↓ SUL</text>
-
-              <text x="15" y="234" style="font-size:9px;font-weight:700;
-          text-anchor:middle;fill:#0077B6;
-          font-family:'DM Sans',sans-serif;" transform="rotate(-90 6 232)">OESTE</text>
-
-              <text x="398" y="235" style="font-size:9px;font-weight:700;
-          text-anchor:middle;fill:#0077B6;
-          font-family:'DM Sans',sans-serif;" transform="rotate(90 398 218)">LESTE</text>
+              <text x="197" y="20" style="font-size:10px;font-weight:700;text-anchor:middle;fill:#0077B6;font-family:'DM Sans',sans-serif;">↑ NORTE</text>
+              <text x="197" y="390" style="font-size:10px;font-weight:700;text-anchor:middle;fill:#0077B6;font-family:'DM Sans',sans-serif;">↓ SUL</text>
+              <text x="15" y="234" style="font-size:9px;font-weight:700;text-anchor:middle;fill:#0077B6;font-family:'DM Sans',sans-serif;" transform="rotate(-90 6 232)">OESTE</text>
+              <text x="398" y="235" style="font-size:9px;font-weight:700;text-anchor:middle;fill:#0077B6;font-family:'DM Sans',sans-serif;" transform="rotate(90 398 218)">LESTE</text>
             </svg>
           </div>
 
@@ -122,9 +98,8 @@
             <div class="mapa-count-badge">
               <i class="fas fa-home"></i>
               <ul>
-
-              <li><span>{{ cfgAtiva.count }}</span> </li>
-              <li>imóveis disponíveis</li>
+                <li><span>{{ imoveisFiltrados.length }}</span></li>
+                <li>imóveis disponíveis</li>
               </ul>
             </div>
           </div>
@@ -181,7 +156,7 @@
           </div>
 
           <div class="sidebar-field sidebar-btn-wrap">
-            <button class="btn-buscar">
+            <button class="btn-buscar" @click="buscar">
               <i class="fas fa-search"></i> Buscar Imóveis
             </button>
           </div>
@@ -195,28 +170,33 @@
       <div>
         <div class="main-header">
           <h2 id="titulo-pagina">
-            {{ modalidade === 'venda' ? 'Imóveis à Venda' : modalidade === 'aluguel' ? 'Imóveis para Alugar' : 'ImóveisRurais' }}
+            {{ modalidade === 'venda' ? 'Imóveis à Venda' : modalidade === 'aluguel' ? 'Imóveis para Alugar' : 'Imóveis Rurais' }}
           </h2>
-          <p class="contagem">Encontrei <strong>{{ imoveisFiltrados.length }}</strong> imóveis</p>
+          <p class="contagem">
+            <span v-if="carregandoImoveis">Buscando...</span>
+            <span v-else>Encontrei <strong>{{ imoveisFiltrados.length }}</strong> imóveis</span>
+          </p>
         </div>
+
+        <div v-if="erroImoveis" class="erro-lista">{{ erroImoveis }}</div>
 
         <div class="listings">
           <div v-for="imovel in imoveisFiltrados" :key="imovel.id" class="card">
             <div class="card-img-wrap">
-              <img :src="imovel.img" :alt="imovel.titulo" loading="lazy" />
+              <img :src="imovel.img || imovel.foto_capa || 'https://via.placeholder.com/600x400?text=GeoHouse'" :alt="imovel.titulo" loading="lazy" />
               <span v-if="imovel.tag" class="card-tag">{{ imovel.tag }}</span>
             </div>
             <div class="card-body">
               <h3>{{ imovel.titulo }}</h3>
-              <div class="price">R$ {{ imovel.preco.toLocaleString('pt-BR') }}</div>
+              <div class="price">R$ {{ (imovel.preco || imovel.preco_venda || 0).toLocaleString('pt-BR') }}</div>
               <div class="details">
                 <span><i class="fas fa-bed"></i> {{ imovel.quartos }}</span>
                 <span><i class="fas fa-bath"></i> {{ imovel.banheiros }}</span>
-                <span><i class="fas fa-ruler-combined"></i> {{ imovel.area }}m²</span>
+                <span><i class="fas fa-ruler-combined"></i> {{ imovel.area || imovel.area_construida }}m²</span>
               </div>
               <p class="city-label">
                 <i class="fas fa-map-marker-alt" style="color:var(--ceu-tecnologico)"></i>
-                {{ imovel.cidade }}
+                {{ imovel.cidade || imovel.bairro }}
               </p>
               <button class="btn-whats" @click="contatar(imovel.id)">
                 <i class="fab fa-whatsapp"></i> Conversar
@@ -232,25 +212,62 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useZona } from '@/composables/useZona'
+import { getImoveis } from '@/services/api.js'
+import { imoveis as imoveisEstaticos } from '@/data/imoveis'
 
 const {
-  zonaAtiva,
-  modalidade,
-  tipoFiltro,
-  precoMin,
-  precoMax,
-  quartosFiltro,
-  imoveisFiltrados,
-  cfgAtiva,
-  selecionarZona,
-  ZONAS_CFG,
-  BTNS_STYLE,
+  zonaAtiva, modalidade, tipoFiltro, precoMin, precoMax, quartosFiltro,
+  cfgAtiva, selecionarZona, ZONAS_CFG, BTNS_STYLE,
 } = useZona()
 
-const tooltipEl = ref(null)
-const svgEl = ref(null)
+const tooltipEl        = ref(null)
+const svgEl            = ref(null)
+const imoveisAPI       = ref([])
+const carregandoImoveis = ref(false)
+const erroImoveis      = ref('')
+
+// Usa dados da API se disponível, senão usa os estáticos
+const imoveisFonte = computed(() => imoveisAPI.value.length ? imoveisAPI.value : imoveisEstaticos)
+
+const imoveisFiltrados = computed(() => {
+  let lista = zonaAtiva.value === 'all'
+    ? imoveisFonte.value
+    : imoveisFonte.value.filter(i => i.zona === zonaAtiva.value)
+
+  if (modalidade.value)
+    lista = lista.filter(i => !i.modalidade || i.modalidade === modalidade.value)
+  if (tipoFiltro.value)
+    lista = lista.filter(i => i.tipo === tipoFiltro.value)
+  if (precoMin.value)
+    lista = lista.filter(i => (i.preco || i.preco_venda || 0) >= parseFloat(precoMin.value))
+  if (precoMax.value)
+    lista = lista.filter(i => (i.preco || i.preco_venda || 0) <= parseFloat(precoMax.value))
+  if (quartosFiltro.value)
+    lista = lista.filter(i => (i.quartos || 0) >= parseInt(quartosFiltro.value))
+
+  return lista
+})
+
+async function buscar() {
+  carregandoImoveis.value = true
+  erroImoveis.value = ''
+  try {
+    const params = {}
+    if (tipoFiltro.value)    params.tipo       = tipoFiltro.value
+    if (precoMin.value)      params.preco_min  = precoMin.value
+    if (precoMax.value)      params.preco_max  = precoMax.value
+    if (quartosFiltro.value) params.quartos    = quartosFiltro.value
+    const dados = await getImoveis(params)
+    imoveisAPI.value = Array.isArray(dados) ? dados : (dados.items || [])
+  } catch (e) {
+    erroImoveis.value = 'Não foi possível carregar da API. Exibindo dados locais.'
+    imoveisAPI.value = []
+  } finally {
+    carregandoImoveis.value = false
+  }
+}
 
 function aplicarCoresMapa() {
   document.querySelectorAll('.zgrp').forEach(g => {
@@ -258,12 +275,12 @@ function aplicarCoresMapa() {
     const ativo = zonaAtiva.value === 'all' || zonaAtiva.value === z
     const cfg = ZONAS_CFG[z]
     g.querySelectorAll('.zp').forEach(el => {
-      el.style.fill = ativo ? cfg.fill : '#f1f5f9'
-      el.style.stroke = ativo ? cfg.stroke : '#cbd5e1'
+      el.style.fill    = ativo ? cfg.fill   : '#f1f5f9'
+      el.style.stroke  = ativo ? cfg.stroke : '#cbd5e1'
       el.style.opacity = ativo ? '1' : '0.3'
     })
     g.querySelectorAll('.zlabel').forEach(el => {
-      el.style.fill = ativo ? cfg.text : '#94a3b8'
+      el.style.fill    = ativo ? cfg.text : '#94a3b8'
       el.style.opacity = ativo ? '1' : '0.3'
     })
   })
@@ -278,21 +295,29 @@ function contatar(id) {
   alert(`✅ Redirecionando para WhatsApp do anunciante (Imóvel #${id})`)
 }
 
-onMounted(() => {
+onMounted(async () => {
   aplicarCoresMapa()
+
+  // Tenta carregar imóveis da API ao iniciar
+  try {
+    const dados = await getImoveis()
+    imoveisAPI.value = Array.isArray(dados) ? dados : (dados.items || [])
+  } catch {
+    // Sem conexão com API — usa dados estáticos silenciosamente
+  }
 
   document.querySelectorAll('.zp').forEach(el => {
     el.addEventListener('mouseenter', () => {
       const z = el.closest('.zgrp').dataset.zona
-      el.style.fill = ZONAS_CFG[z].hover
+      el.style.fill    = ZONAS_CFG[z].hover
       el.style.opacity = '1'
-      tooltipEl.value.style.display = 'block'
-      tooltipEl.value.textContent = (el.dataset.b || '') + ' — ' + ZONAS_CFG[z].nome
+      tooltipEl.value.style.display  = 'block'
+      tooltipEl.value.textContent    = (el.dataset.b || '') + ' — ' + ZONAS_CFG[z].nome
     })
     el.addEventListener('mousemove', e => {
       const r = svgEl.value.parentElement.getBoundingClientRect()
       tooltipEl.value.style.left = (e.clientX - r.left + 12) + 'px'
-      tooltipEl.value.style.top = (e.clientY - r.top - 38) + 'px'
+      tooltipEl.value.style.top  = (e.clientY - r.top - 38) + 'px'
     })
     el.addEventListener('mouseleave', () => {
       aplicarCoresMapa()
@@ -305,6 +330,7 @@ onMounted(() => {
   })
 })
 </script>
+
 <style>
 .zona-btn {
   font-size: 25px !important;
@@ -314,16 +340,17 @@ onMounted(() => {
   position: relative;
   top: 10vh;
 }
-.mapa-info-box{
+.mapa-info-box {
   margin: 0 auto;
   position: relative;
   top: 150px;
 }
-.mapa-count-badge{
-  font-size: 30px;
-}
-
-.mapa-count-badge span{
-  font-size: 80px;
+.mapa-count-badge { font-size: 30px; }
+.mapa-count-badge span { font-size: 80px; }
+.erro-lista {
+  color: #d97706;
+  font-size: 0.85rem;
+  padding: 8px 0;
+  margin-bottom: 12px;
 }
 </style>
