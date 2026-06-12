@@ -1,16 +1,20 @@
-<template>
+*<template>
   <div class="page">
     <div class="card-form">
       <h2>Entrar</h2>
 
-      <form @submit.prevent="login">
+      <form @submit.prevent="fazerLogin">
         <label>E-mail</label>
         <input v-model="email" type="email" placeholder="seu@email.com" required />
 
         <label>Senha</label>
         <input v-model="senha" type="password" placeholder="Sua senha" required />
 
-        <button type="submit">Entrar</button>
+        <p v-if="erro" class="erro">{{ erro }}</p>
+
+        <button type="submit" :disabled="carregando">
+          {{ carregando ? 'Entrando...' : 'Entrar' }}
+        </button>
       </form>
 
       <p>Não tem conta? <router-link to="/cadastro">Cadastre-se</router-link></p>
@@ -21,14 +25,25 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { login } from '@/services/api.js'
 
 const router = useRouter()
-const email  = ref('')
-const senha  = ref('')
+const email      = ref('')
+const senha      = ref('')
+const erro       = ref('')
+const carregando = ref(false)
 
-function login() {
-  console.log('login', email.value, senha.value)
-  router.push('/')
+async function fazerLogin() {
+  erro.value = ''
+  carregando.value = true
+  try {
+    await login(email.value, senha.value)
+    router.push('/')
+  } catch (e) {
+    erro.value = e.message || 'Erro ao fazer login.'
+  } finally {
+    carregando.value = false
+  }
 }
 </script>
 
@@ -80,11 +95,18 @@ input {
   color: var(--azul-royal);
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
 }
 
 input:focus {
   border-color: var(--azul-corporativo);
   box-shadow: 0 0 0 3px rgba(0,119,182,0.12);
+}
+
+.erro {
+  color: #dc2626;
+  font-size: 0.85rem;
+  margin-top: 10px;
 }
 
 button[type="submit"] {
@@ -102,9 +124,14 @@ button[type="submit"] {
   transition: opacity 0.2s, transform 0.2s;
 }
 
-button[type="submit"]:hover {
+button[type="submit"]:hover:not(:disabled) {
   opacity: 0.9;
   transform: translateY(-1px);
+}
+
+button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 p {
@@ -120,7 +147,5 @@ a {
   text-decoration: none;
 }
 
-a:hover {
-  color: var(--azul-royal);
-}
+a:hover { color: var(--azul-royal); }
 </style>
