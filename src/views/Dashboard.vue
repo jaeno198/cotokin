@@ -13,8 +13,8 @@
         <div class="row g-2 align-items-start">
 
           <!-- COL 1 — Botões de zona -->
-          <div class="col-12 col-md-2 d-flex flex-column gap-2">
-            <button v-for="(cfg, key) in ZONAS_CFG" :key="key" class="zona-btn w-100" style="height:10vh"
+          <div class="col-12 col-md-2 d-flex flex-column gap-2" style="min-width:140px;">
+            <button v-for="(cfg, key) in ZONAS_CFG" :key="key" class="zona-btn w-100"
               :id="`zbtn-${key}`" :class="{ active: zonaAtiva === key }"
               :style="zonaAtiva === key ? BTNS_STYLE[key] : ''" @click="handleSelecionarZona(key)">
               <span class="zdot" :style="`background:${key === 'all' ? 'rgba(255,255,255,0.7)' : cfg.cor}`"></span>
@@ -90,12 +90,12 @@
           </div>
 
           <!-- COL 3 — Info bairros -->
-          <div class="col-12 col-md-3 d-flex flex-column gap-3 justify-content-start">
-            <div class="mapa-info-box" :style="`border-left-color: ${cfgAtiva.cor}`">
+          <div class="col-12 col-md-3 d-flex flex-column gap-3 justify-content-start" style="min-width:200px;">
+            <div class="mapa-info-box" :style="`border-left-color: ${cfgAtiva.cor}`" style="max-height:210px; overflow-y:auto;">
               <div class="zona-nome">{{ cfgAtiva.nome }}</div>
               <div class="zona-bairros">{{ cfgAtiva.bairros }}</div>
             </div>
-            <div class="mapa-count-badge">
+            <div class="mapa-count-badge" style="max-height:210px;">
               <i class="fas fa-home"></i>
               <ul>
                 <li><span>{{ imoveisFiltrados.length }}</span></li>
@@ -332,21 +332,318 @@ onMounted(async () => {
 </script>
 
 <style>
+/* ── MAPA SECTION ─────────────────────────────── */
+.mapa-section {
+  background: var(--brisa-suave);
+  border-top: var(--borda-g) solid var(--ceu-tecnologico);
+  border-bottom: var(--borda-m) solid var(--brisa-suave);
+  box-shadow: 0 4px 20px rgba(3,4,94,0.07);
+}
+.mapa-section .section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--azul-corporativo);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 14px;
+}
+
+/* ── BOTÕES DE ZONA ────────────────────────────── */
 .zona-btn {
-  font-size: 25px !important;
-  font-weight: auto;
-  text-align: center;
-  padding-left: 25%;
-  position: relative;
-  top: 10vh;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 14px;
+  height: 44px;
+  min-width: 120px;
+  border-radius: 30px;
+  border: 2px solid transparent;
+  background: var(--branco);
+  color: var(--azul-royal);
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.18s;
 }
+.zdot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── SVG MAPA ──────────────────────────────────── */
+.zp {
+  stroke-width: 1.2;
+  transition: fill 0.22s, opacity 0.22s, stroke 0.22s;
+  cursor: pointer;
+}
+.zlabel {
+  font-size: 9px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+}
+.mapa-tooltip {
+  position: absolute;
+  background: var(--azul-royal);
+  color: var(--branco);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  pointer-events: none;
+  display: none;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+/* ── INFO BOX + BADGE ──────────────────────────── */
 .mapa-info-box {
-  margin: 0 auto;
-  position: relative;
-  top: 150px;
+  background: var(--branco);
+  border-radius: var(--border-radius-m);
+  padding: 14px 16px;
+  border-left: var(--borda-m) solid var(--ceu-tecnologico);
+  flex: 1;
+  min-width: 180px;
+  max-height: 210px;
+  overflow-y: auto;
 }
-.mapa-count-badge { font-size: 30px; }
-.mapa-count-badge span { font-size: 80px; }
+.mapa-info-box .zona-nome {
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--azul-royal);
+  margin-bottom: 4px;
+}
+.mapa-info-box .zona-bairros {
+  font-size: 0.8rem;
+  color: var(--azul-corporativo);
+  line-height: 1.6;
+}
+.mapa-count-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gradient-diagonal);
+  color: var(--branco);
+  padding: 12px 20px;
+  border-radius: var(--border-radius-m);
+  font-size: 0.88rem;
+  font-weight: 700;
+  white-space: nowrap;
+  min-width: 160px;
+  max-height: 210px;
+  box-shadow: 0 4px 14px rgba(0,119,182,0.3);
+}
+.mapa-count-badge ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+.mapa-count-badge ul li span { font-size: 2.4rem; font-weight: 800; line-height: 1; }
+.mapa-count-badge ul li { font-size: 0.85rem; }
+
+/* ── LAYOUT PRINCIPAL ──────────────────────────── */
+.container-main {
+  max-width: 1400px !important;
+  min-width: 320px;
+  margin: 24px auto;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── SIDEBAR FILTROS ───────────────────────────── */
+.sidebar {
+  background: var(--branco);
+  padding: 18px 22px;
+  border-radius: var(--border-radius-g);
+  box-shadow: 0 4px 20px rgba(3,4,94,0.08);
+  border-top: var(--borda-g) solid var(--ceu-tecnologico);
+  min-width: 280px;
+}
+.sidebar h3 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 14px;
+  color: var(--azul-royal);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sidebar-fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 16px;
+}
+.sidebar-field { flex: 1 1 160px; min-width: 140px; }
+.sidebar-field label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--azul-corporativo);
+  margin-bottom: 6px;
+}
+.sidebar-btn-wrap { flex: 0 0 auto; min-width: unset; align-self: flex-end; }
+select, input[type=number], input[type=text] {
+  width: 100%;
+  padding: 10px 14px;
+  border: var(--borda-p) solid var(--agua-cristalina);
+  border-radius: var(--border-radius-m);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: var(--azul-royal);
+  outline: none;
+  background: var(--branco);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+select:focus, input[type=number]:focus, input[type=text]:focus {
+  border-color: var(--azul-corporativo);
+  box-shadow: 0 0 0 3px rgba(0,119,182,0.12);
+}
+.btn-buscar {
+  padding: 11px 22px;
+  background: var(--gradient-horizontal);
+  color: var(--branco);
+  border: none;
+  border-radius: var(--border-radius-m);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(0,119,182,0.3);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.btn-buscar:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ── HEADER DA LISTAGEM ────────────────────────── */
+.main-header { display: flex; flex-wrap: wrap; }
+.main-header h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--azul-royal);
+}
+.contagem { font-size: 0.9rem; color: var(--azul-corporativo); }
+.contagem strong { color: var(--ceu-tecnologico); font-weight: 700; }
+
+/* ── CARDS DE IMÓVEIS ──────────────────────────── */
+.listings {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  min-width: 280px;
+}
+.card {
+  background: var(--branco);
+  border-radius: var(--border-radius-g);
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(3,4,94,0.09);
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  border-bottom: var(--borda-m) solid transparent;
+  min-width: 260px;
+}
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 14px 36px rgba(3,4,94,0.16);
+  border-bottom-color: var(--ceu-tecnologico);
+}
+.card-img-wrap { position: relative; overflow: hidden; }
+.card img {
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s;
+}
+.card:hover img { transform: scale(1.04); }
+.card-tag {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--gradient-diagonal-royal);
+  color: var(--branco);
+  padding: 4px 12px;
+  border-radius: var(--border-radius-gg);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.card-body { padding: 16px; }
+.card-body h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--azul-royal);
+}
+.price {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 800;
+  background: var(--gradient-horizontal);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+.details {
+  display: flex;
+  gap: 14px;
+  margin: 8px 0;
+  font-size: 0.88rem;
+  color: var(--azul-corporativo);
+}
+.details span { display: flex; align-items: center; gap: 5px; }
+.details i { color: var(--ceu-tecnologico); }
+.city-label {
+  font-size: 0.85rem;
+  color: var(--azul-corporativo);
+  opacity: 0.8;
+  margin-bottom: 12px;
+}
+.btn-whats {
+  background: var(--gradient-noite-ate-ceu);
+  color: var(--branco);
+  border: none;
+  padding: 10px;
+  width: 100%;
+  border-radius: var(--border-radius-m);
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-whats:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ── ERROS ─────────────────────────────────────── */
 .erro-lista {
   color: #d97706;
   font-size: 0.85rem;
