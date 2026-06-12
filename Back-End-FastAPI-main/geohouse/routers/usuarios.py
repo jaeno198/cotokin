@@ -2,6 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 from typing import List, Optional
  
+from database import get_db
+from services.auth_services import hash_password, verify_password
 from models import Usuario
 from schemas.usuario import (
     UsuarioCreate,
@@ -19,20 +21,9 @@ router = APIRouter(prefix="/usuarios", tags=["Usuários"])
 # Dependencies — placeholders
 # ──────────────────────────────────────────────
  
-def get_db():
-    """Placeholder — substituído pelo SessionLocal do database.py."""
-    raise NotImplementedError("Conecte ao database.py")
  
- 
-def hash_password(plain: str) -> str:
-    """Placeholder — substituído pelo hash_password do auth_service.py."""
-    raise NotImplementedError("Conecte ao auth_service.py")
- 
- 
-def verify_password(plain: str, hashed: str) -> bool:
-    """Placeholder — substituído pelo verify_password do auth_service.py."""
-    raise NotImplementedError("Conecte ao auth_service.py")
- 
+  
+  
  
 # ──────────────────────────────────────────────
 # Helper
