@@ -1,4 +1,4 @@
-*<template>
+<template>
   <div class="page">
     <div class="card-form">
       <h2>Entrar</h2>
