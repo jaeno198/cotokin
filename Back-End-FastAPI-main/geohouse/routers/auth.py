@@ -4,6 +4,7 @@ from jose import JWTError
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
  
+from database import get_db
 from models import Usuario
 from services.auth_services import (
     authenticate_usuario,
@@ -23,9 +24,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 # (substitua pela sua função get_db real)
 # ──────────────────────────────────────────────
  
-def get_db():
-    """Placeholder — substitua pelo SessionLocal do seu database.py."""
-    raise NotImplementedError("Conecte ao database.py")
  
  
 # ──────────────────────────────────────────────
