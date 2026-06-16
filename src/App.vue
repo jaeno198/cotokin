@@ -113,7 +113,7 @@ function fazerLogout() {
 <style>
 header nav a img {
   display: block;
-  height: 100px;
+  height: 100%;
   max-width: 160px;
   width: auto;
   object-fit: contain;
