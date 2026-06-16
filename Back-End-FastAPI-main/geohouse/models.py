@@ -182,7 +182,9 @@ class FotoImovel(Base):
     id:        Mapped[int]      = mapped_column(Integer, primary_key=True, autoincrement=True)
     imovel_id: Mapped[int]      = mapped_column(Integer, ForeignKey("imoveis.id"), nullable=False)
     url:       Mapped[str]      = mapped_column(String(500), nullable=False)
+    descricao: Mapped[str]      = mapped_column(String(255), nullable=True)
     ordem:     Mapped[int]      = mapped_column(Integer, nullable=False, default=0)
+    capa:      Mapped[bool]     = mapped_column(Boolean, nullable=False, default=False)
     criado_em: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
  
     # Relacionamento

@@ -67,9 +67,9 @@ app.add_middleware(
 os.makedirs(settings.upload_dir, exist_ok=True)
 
 app.mount(
-    "/uploads",
-    StaticFiles(directory="uploads"),
-    name="uploads",
+    "/img",
+    StaticFiles(directory="img"),
+    name="img",
 )
 
 

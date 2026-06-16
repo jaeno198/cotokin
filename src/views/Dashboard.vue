@@ -180,8 +180,10 @@
 
         <div v-if="erroImoveis" class="erro-lista">{{ erroImoveis }}</div>
 
+        <UltimosVistos />
+
         <div class="listings">
-          <div v-for="imovel in imoveisFiltrados" :key="imovel.id" class="card">
+          <div v-for="imovel in imoveisFiltrados" :key="imovel.id" class="card" @click="verImovel(imovel)" style="cursor:pointer;">
             <div class="card-img-wrap">
               <img :src="imovel.img || imovel.foto_capa || 'https://via.placeholder.com/600x400?text=GeoHouse'" :alt="imovel.titulo" loading="lazy" />
               <span v-if="imovel.tag" class="card-tag">{{ imovel.tag }}</span>
@@ -215,8 +217,10 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useZona } from '@/composables/useZona'
+import { useUltimosVistos } from '@/composables/useUltimosVistos'
 import { getImoveis } from '@/services/api.js'
 import { imoveis as imoveisEstaticos } from '@/data/imoveis'
+import UltimosVistos from '@/components/UltimosVistos.vue'
 
 const route = useRoute()
 
@@ -224,6 +228,8 @@ const {
   zonaAtiva, modalidade, tipoFiltro, precoMin, precoMax, quartosFiltro,
   cfgAtiva, selecionarZona, ZONAS_CFG, BTNS_STYLE,
 } = useZona()
+
+const { registrar: registrarVisto } = useUltimosVistos()
 
 const tooltipEl        = ref(null)
 const svgEl            = ref(null)
@@ -261,6 +267,10 @@ const imoveisFiltrados = computed(() => {
 
   return lista
 })
+
+function verImovel(imovel) {
+  registrarVisto(imovel)
+}
 
 async function buscar() {
   carregandoImoveis.value = true

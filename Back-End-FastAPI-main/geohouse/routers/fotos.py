@@ -3,23 +3,14 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 import shutil, os, uuid
  
+from database import get_db
 from models import FotoImovel, Imovel
 from schemas.foto import FotoCreate, FotoRead, FotoUpdate
- 
+
 router = APIRouter(prefix="/imoveis/{imovel_id}/fotos", tags=["Fotos"])
- 
-# Diretório local de upload (ajuste para seu storage real)
-UPLOAD_DIR = "uploads/fotos"
+
+UPLOAD_DIR = "img"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
- 
- 
-# ──────────────────────────────────────────────
-# Dependency: sessão do banco
-# ──────────────────────────────────────────────
- 
-def get_db():
-    """Placeholder — substituído pelo SessionLocal do database.py."""
-    raise NotImplementedError("Conecte ao database.py")
  
  
 # ──────────────────────────────────────────────
@@ -218,7 +209,7 @@ def deletar_foto(
         )
  
     # Remove arquivo local se existir
-    if foto.url.startswith(f"/{UPLOAD_DIR}/"):
+    if foto.url.startswith(f"/{UPLOAD_DIR}/") or foto.url.startswith("/uploads/fotos/"):
         caminho = foto.url.lstrip("/")
         if os.path.exists(caminho):
             os.remove(caminho)
