@@ -2,25 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
  
+from database import get_db
 from models import Categoria
 from schemas.categoria import CategoriaCreate, CategoriaRead, CategoriaUpdate
- 
+
 router = APIRouter(prefix="/categorias", tags=["Categorias"])
- 
- 
-# ──────────────────────────────────────────────
-# Dependency: sessão do banco
-# (substituída automaticamente quando database.py
-#  for importado no main.py via get_db)
-# ──────────────────────────────────────────────
- 
-def get_db():
-    """Placeholder — substituído pelo SessionLocal do database.py."""
-    raise NotImplementedError("Conecte ao database.py")
- 
- 
-# ──────────────────────────────────────────────
-# GET /categorias — lista todas
 # ──────────────────────────────────────────────
  
 @router.get(

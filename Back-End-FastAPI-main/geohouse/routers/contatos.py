@@ -2,23 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 from typing import List, Optional
  
+from database import get_db
 from models import Contato, Imovel, Usuario
 from schemas.contato import ContatoCreate, ContatoRead, ContatoUpdate
- 
+
 router = APIRouter(prefix="/contatos", tags=["Contatos"])
- 
- 
-# ──────────────────────────────────────────────
-# Dependency: sessão do banco
-# ──────────────────────────────────────────────
- 
-def get_db():
-    """Placeholder — substituído pelo SessionLocal do database.py."""
-    raise NotImplementedError("Conecte ao database.py")
- 
- 
-# ──────────────────────────────────────────────
-# POST /contatos — lead público (sem autenticação)
 # ──────────────────────────────────────────────
  
 @router.post(
