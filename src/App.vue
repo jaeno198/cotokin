@@ -36,6 +36,17 @@
 
     </div>
 
+    <!-- POPUP INSTALAR PWA -->
+    <div v-if="mostrarInstalar" class="pwa-banner">
+      <img src="@/assets/img/logos/logo.jpeg" alt="GeoHouse" class="pwa-logo" />
+      <div class="pwa-texto">
+        <strong>Instalar GeoHouse</strong>
+        <span>Acesse imóveis offline, direto da tela inicial</span>
+      </div>
+      <button class="pwa-btn-instalar" @click="instalarPwa">Instalar</button>
+      <button class="pwa-btn-fechar" @click="mostrarInstalar = false">✕</button>
+    </div>
+
     <!-- MODAL ANUNCIAR -->
     <div v-if="modalAberto" class="modal-overlay" @click.self="modalAberto = false">
       <div class="modal-box">
@@ -72,12 +83,34 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { logout } from '@/services/api.js'
 
-const router       = useRouter()
-const searchQuery  = ref('')
-const modalAberto  = ref(false)
-const enviando     = ref(false)
-const erroModal    = ref('')
-const sucessoModal = ref('')
+const router          = useRouter()
+const searchQuery     = ref('')
+const modalAberto     = ref(false)
+const enviando        = ref(false)
+const erroModal       = ref('')
+const sucessoModal    = ref('')
+const mostrarInstalar = ref(false)
+let   deferredPrompt  = null
+
+onMounted(() => {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault()
+    deferredPrompt = e
+    mostrarInstalar.value = true
+  })
+  window.addEventListener('appinstalled', () => {
+    mostrarInstalar.value = false
+    deferredPrompt = null
+  })
+})
+
+async function instalarPwa() {
+  if (!deferredPrompt) return
+  deferredPrompt.prompt()
+  const { outcome } = await deferredPrompt.userChoice
+  if (outcome === 'accepted') mostrarInstalar.value = false
+  deferredPrompt = null
+}
 
 const novoAnuncio = ref({
   titulo: '', descricao: '', tipo: '', preco: null,
@@ -135,4 +168,68 @@ header nav a img {
 .modal-aviso a { color: var(--ceu-tecnologico, #0077B6); font-weight: 700; text-decoration: none; }
 .erro-modal { color: #dc2626; font-size: 0.85rem; margin-top: 8px; }
 .sucesso-modal { color: #16a34a; font-size: 0.85rem; margin-top: 8px; }
+
+/* PWA install banner */
+.pwa-banner {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  padding: 14px 18px;
+  z-index: 9999;
+  max-width: 380px;
+  width: calc(100% - 32px);
+  border-left: 4px solid #0077B6;
+}
+.pwa-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.pwa-texto {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+.pwa-texto strong {
+  font-size: 0.9rem;
+  color: #0f172a;
+}
+.pwa-texto span {
+  font-size: 0.76rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+.pwa-btn-instalar {
+  background: #0077B6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.pwa-btn-instalar:hover { background: #005f8e; }
+.pwa-btn-fechar {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+.pwa-btn-fechar:hover { color: #dc2626; }
 </style>
