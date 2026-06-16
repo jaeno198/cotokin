@@ -18,6 +18,9 @@
       </form>
 
       <p>Não tem conta? <router-link to="/cadastro">Cadastre-se</router-link></p>
+      <button type="button" class="demo-btn" @click="loginDemo" :disabled="carregando">
+        Entrar para apresentação
+      </button>
     </div>
   </div>
 </template>
@@ -33,17 +36,30 @@ const senha      = ref('')
 const erro       = ref('')
 const carregando = ref(false)
 
-async function fazerLogin() {
+const demoEmail = 'demo@geo.com'
+const demoSenha = 'demo123'
+
+async function fazerLogin(redirectToPresentation = false) {
   erro.value = ''
   carregando.value = true
   try {
     await login(email.value, senha.value)
-    router.push('/')
+    if (redirectToPresentation) {
+      router.push({ path: '/', query: { focus: '1,6' } })
+    } else {
+      router.push('/')
+    }
   } catch (e) {
     erro.value = e.message || 'Erro ao fazer login.'
   } finally {
     carregando.value = false
   }
+}
+
+function loginDemo() {
+  email.value = demoEmail
+  senha.value = demoSenha
+  fazerLogin(true)
 }
 </script>
 
@@ -109,11 +125,10 @@ input:focus {
   margin-top: 10px;
 }
 
-button[type="submit"] {
+button[type="submit"], .demo-btn {
   width: 100%;
   margin-top: 24px;
   padding: 14px;
-  background: var(--gradient-horizontal);
   color: var(--branco);
   border: none;
   border-radius: var(--border-radius-m);
@@ -124,12 +139,20 @@ button[type="submit"] {
   transition: opacity 0.2s, transform 0.2s;
 }
 
-button[type="submit"]:hover:not(:disabled) {
+button[type="submit"] {
+  background: var(--gradient-horizontal);
+}
+
+.demo-btn {
+  background: var(--azul-corporativo);
+}
+
+button[type="submit"]:hover:not(:disabled), .demo-btn:hover:not(:disabled) {
   opacity: 0.9;
   transform: translateY(-1px);
 }
 
-button[type="submit"]:disabled {
+button[type="submit"]:disabled, .demo-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }

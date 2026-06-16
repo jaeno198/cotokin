@@ -213,9 +213,12 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { useZona } from '@/composables/useZona'
 import { getImoveis } from '@/services/api.js'
 import { imoveis as imoveisEstaticos } from '@/data/imoveis'
+
+const route = useRoute()
 
 const {
   zonaAtiva, modalidade, tipoFiltro, precoMin, precoMax, quartosFiltro,
@@ -227,6 +230,12 @@ const svgEl            = ref(null)
 const imoveisAPI       = ref([])
 const carregandoImoveis = ref(false)
 const erroImoveis      = ref('')
+
+const focusIds = computed(() => {
+  const raw = route.query.focus || ''
+  const ids = raw.toString().split(',').map(value => parseInt(value.trim(), 10)).filter(n => Number.isInteger(n) && n > 0)
+  return ids.length ? ids : null
+})
 
 // Usa dados da API se disponível, senão usa os estáticos
 const imoveisFonte = computed(() => imoveisAPI.value.length ? imoveisAPI.value : imoveisEstaticos)
@@ -246,6 +255,9 @@ const imoveisFiltrados = computed(() => {
     lista = lista.filter(i => (i.preco || i.preco_venda || 0) <= parseFloat(precoMax.value))
   if (quartosFiltro.value)
     lista = lista.filter(i => (i.quartos || 0) >= parseInt(quartosFiltro.value))
+
+  if (focusIds.value)
+    lista = lista.filter(i => focusIds.value.includes(i.id))
 
   return lista
 })
