@@ -1,11 +1,24 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.base import BaseHTTPMiddleware
 from contextlib import asynccontextmanager
 import os
 
 from config import settings
 from routers import auth, usuarios, imoveis, fotos, contatos, categorias
+
+
+# No Vercel as chamadas chegam como /api/auth/login — strip o prefixo /api
+# para os routers FastAPI que usam /auth/login, /imoveis/, etc.
+class StripApiPrefix(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        path = request.scope.get("path", "")
+        if path.startswith("/api"):
+            stripped = path[4:] or "/"
+            request.scope["path"] = stripped
+            request.scope["raw_path"] = stripped.encode()
+        return await call_next(request)
 
 
 # ──────────────────────────────────────────────
@@ -36,6 +49,9 @@ app = FastAPI(
     redoc_url="/redoc",
     lifespan=lifespan,
 )
+
+if os.environ.get("VERCEL"):
+    app.add_middleware(StripApiPrefix)
 
 
 # ──────────────────────────────────────────────
