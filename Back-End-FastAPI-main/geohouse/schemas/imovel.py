@@ -137,7 +137,8 @@ class ImovelResumo(BaseModel):
     preco_aluguel: Optional[Decimal]
     quartos:       Optional[int]
     area_total:    Optional[Decimal]
-    foto_capa:     Optional[str] = None   # URL da foto marcada como capa
-    criado_em:     datetime
+    foto_capa:      Optional[str] = None
+    categoria_slug: Optional[str] = None
+    criado_em:      datetime
  
     model_config = {"from_attributes": True}

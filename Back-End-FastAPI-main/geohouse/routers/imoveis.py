@@ -142,9 +142,6 @@ def listar_imoveis(
             categoria_slug=im.categoria.slug if im.categoria else None,
             criado_em=im.criado_em,
         )
-            categoria_slug=im.categoria.slug if im.categoria else None,
-            criado_em=im.criado_em,
-        )
         resultado.append(resumo)
  
     return resultado

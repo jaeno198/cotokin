@@ -1,5 +1,9 @@
+import os as _os
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
+
+# No Vercel o filesystem é read-only; uploads vão para /tmp
+_DEFAULT_UPLOAD_DIR = "/tmp/img" if _os.environ.get("VERCEL") else "img"
 
 
 class Settings(BaseSettings):
@@ -8,8 +12,8 @@ class Settings(BaseSettings):
     db_host:     str = "141.11.72.90"
     db_port:     int = 3306
     db_name:     str = "geohousegeo_geohouse_segundou"
-    db_user:     str = "geohousegeo"
-    db_password: str = "123456789"
+    db_user:     str = "geohousegeo_geohouse_segundou"
+    db_password: str = "12345678"
 
     # ── JWT ───────────────────────────────────
     secret_key:        str = "geohouse_chave_secreta_2026"
@@ -28,7 +32,7 @@ class Settings(BaseSettings):
     ]
 
     # ── Upload ────────────────────────────────
-    upload_dir:    str = "uploads/fotos"
+    upload_dir:    str = _DEFAULT_UPLOAD_DIR
     max_upload_mb: int = 5
 
     # ── URL de conexão MariaDB ─────────────────

@@ -5,8 +5,6 @@ from contextlib import asynccontextmanager
 import os
 
 from config import settings
-from database import create_tables
-
 from routers import auth, usuarios, imoveis, fotos, contatos, categorias
 
 
@@ -16,18 +14,11 @@ from routers import auth, usuarios, imoveis, fotos, contatos, categorias
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    Executado uma vez ao iniciar o servidor:
-      - Cria as tabelas no SQLite (se não existirem)
-      - Cria o diretório de uploads (se não existir)
-    """
-    create_tables()
     os.makedirs(settings.upload_dir, exist_ok=True)
-    print(f"✅ Banco de dados: {settings.database_url}")
-    print(f"✅ Upload dir:     {settings.upload_dir}")
+    print(f"Banco: {settings.database_url}")
+    print(f"Upload dir: {settings.upload_dir}")
     yield
-    # Código após o yield roda no shutdown (opcional)
-    print("🛑 Servidor encerrado.")
+    print("Servidor encerrado.")
 
 
 # ──────────────────────────────────────────────
@@ -61,16 +52,15 @@ app.add_middleware(
 
 
 # ──────────────────────────────────────────────
-# Arquivos estáticos (fotos enviadas via upload)
+# Arquivos estáticos — só monta se o diretório existir
+# No Vercel usa /tmp/img (efêmero); em produção use CDN
 # ──────────────────────────────────────────────
 
-os.makedirs(settings.upload_dir, exist_ok=True)
-
-app.mount(
-    "/img",
-    StaticFiles(directory="img"),
-    name="img",
-)
+try:
+    os.makedirs(settings.upload_dir, exist_ok=True)
+    app.mount("/img", StaticFiles(directory=settings.upload_dir), name="img")
+except Exception:
+    pass
 
 
 # ──────────────────────────────────────────────
@@ -100,7 +90,7 @@ def root():
 
 
 # ──────────────────────────────────────────────
-# Entrypoint direto (python main.py)
+# Entrypoint local (python main.py)
 # ──────────────────────────────────────────────
 
 if __name__ == "__main__":

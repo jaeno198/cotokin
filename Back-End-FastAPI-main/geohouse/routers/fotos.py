@@ -3,14 +3,14 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 import shutil, os, uuid
  
+from config import settings
 from database import get_db
 from models import FotoImovel, Imovel
 from schemas.foto import FotoCreate, FotoRead, FotoUpdate
 
 router = APIRouter(prefix="/imoveis/{imovel_id}/fotos", tags=["Fotos"])
 
-UPLOAD_DIR = "img"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+UPLOAD_DIR = settings.upload_dir
  
  
 # ──────────────────────────────────────────────
@@ -81,6 +81,7 @@ def upload_foto(
         )
  
     # Gera nome único e salva
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
     ext = file.filename.rsplit(".", 1)[-1]
     nome_arquivo = f"{uuid.uuid4().hex}.{ext}"
     caminho = os.path.join(UPLOAD_DIR, nome_arquivo)

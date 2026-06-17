@@ -1,20 +1,15 @@
-from sqlalchemy import create_engine, event
-from sqlalchemy.orm import sessionmaker, DeclarativeBase
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
 from config import settings
 
-
-# ── Engine MariaDB ────────────────────────────
+# NullPool: sem pool persistente — obrigatório em ambientes serverless (Vercel)
 engine = create_engine(
     settings.database_url,
+    poolclass=NullPool,
     echo=settings.debug,
-    pool_pre_ping=True,      # verifica conexão antes de usar
-    pool_recycle=3600,       # recicla conexões a cada 1h
-    pool_size=5,
-    max_overflow=10,
 )
 
-
-# ── Session factory ───────────────────────────
 SessionLocal = sessionmaker(
     bind=engine,
     autocommit=False,
@@ -22,12 +17,6 @@ SessionLocal = sessionmaker(
 )
 
 
-# ── Base declarativa ──────────────────────────
-class Base(DeclarativeBase):
-    pass
-
-
-# ── Dependency FastAPI ────────────────────────
 def get_db():
     db = SessionLocal()
     try:
@@ -36,7 +25,6 @@ def get_db():
         db.close()
 
 
-# ── Criação das tabelas ───────────────────────
 def create_tables():
-    import models  # noqa: F401
+    from models import Base
     Base.metadata.create_all(bind=engine)
